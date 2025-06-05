@@ -6,11 +6,11 @@ import DictionaryComp from './components/DictionaryComp';
 import "@lowlighter/matcha/dist/matcha.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <>
-      <h1>Hello World, Iam App</h1>
+
       <DictionaryComp />
     </>
   )

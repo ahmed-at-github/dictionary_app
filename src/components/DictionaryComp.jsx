@@ -6,6 +6,7 @@ import axios from "axios";
 export default function DictionaryComp() {
     // State LOGIC
     const [data, setData] = useState("");
+    const [found, setFound] = useState(false);
     const [searchWord, setSearchWord] = useState("");
 
     //ASYNC FETCH
@@ -13,8 +14,16 @@ export default function DictionaryComp() {
         axios
             .get(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${searchWord}`)
             .then((res) => {
+                setFound(true);
                 setData(res.data[0]);
-            });
+            })
+            .catch((err) => {
+                setFound(false);
+                setData(true)
+                console.log("not found");
+
+            }
+            )
     }
 
     //HANDLERS
@@ -28,25 +37,28 @@ export default function DictionaryComp() {
             <div className="App">
                 <h1>Simple Dictionary App</h1>
                 <div className="searchBox">
-                    <input type="text" placeholder="Search for word" onChange={(e) => { setSearchWord(e.target.value) }} />
-                    <button onClick={getMeaning}></button>
-                    <FaSearch size="20px" />
+                    <input style={{ width: "auto", display: "inline" }} type="text" placeholder="Search for word" onChange={(e) => { setSearchWord(e.target.value) }} />
+                    <button onClick={getMeaning}> <FaSearch size="20px" /></button>
+
                 </div>
                 {
-                    data && (<div className="showResults">
+                    data && (found ? <div className="showResults">
                         <h2>
                             {data.word}{" "}
                             <button onClick={playAudio}>
                                 <FcSpeaker size="26px" />
                             </button>
                         </h2>
-                        <h4>Parts of speech:</h4>
-                        <p>{data.meanings[0].partOfSpeech}</p>
-                        <h4>Definition:</h4>
-                        <p>{data.meanings[0].definitions[0].definition}</p>
-                        <h4>Example:</h4>
-                        <p>{data.meanings[0].definitions[0].example || `n/a`}</p>
-                    </div>)
+                        <h4>Parts of speech:  <span>{data.meanings[0].partOfSpeech}</span></h4>
+
+                        <h4>Definition: <span>{data.meanings[0].definitions[0].definition}</span></h4>
+
+                        <h4>Example: <span>{data.meanings[0].definitions[0].example || `n/a`}</span></h4>
+
+                    </div> : <div>
+                        <h2> Searched word was not found</h2>
+                    </div>
+                    )
                 }
             </div>
         </>
